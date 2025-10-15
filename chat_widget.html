@@ -1,0 +1,275 @@
+<!-- Universal Booking Chat Widget -->
+<!-- Универсальный виджет чата для записи клиентов -->
+<style>
+#booking-chat-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  font-size: 32px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#booking-chat-btn:hover { background: #4f46e5; }
+
+#booking-chat-window {
+  display: none;
+  position: fixed;
+  bottom: 110px;
+  right: 32px;
+  width: 340px;
+  max-width: 95vw;
+  height: 420px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  z-index: 10000;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+}
+
+#booking-chat-header {
+  background: #6366f1;
+  color: #fff;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#booking-chat-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+#booking-chat-close:hover { opacity: 1; }
+
+#booking-chat-messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  background: #f9fafb;
+}
+
+.booking-msg {
+  margin-bottom: 10px;
+  display: flex;
+}
+.booking-msg-user { justify-content: flex-end; }
+.booking-msg-bot { justify-content: flex-start; }
+
+.booking-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+.booking-bubble-user {
+  background: #6366f1;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.booking-bubble-bot {
+  background: #fff;
+  color: #333;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+#booking-chat-form {
+  display: flex;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+#booking-chat-input {
+  flex: 1;
+  border: none;
+  padding: 12px;
+  font-size: 15px;
+  outline: none;
+}
+
+#booking-chat-send {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 0 18px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#booking-chat-send:hover { background: #4f46e5; }
+#booking-chat-send:disabled { 
+  background: #9ca3af; 
+  cursor: not-allowed; 
+}
+</style>
+
+<button id="booking-chat-btn" title="Открыть чат"><span>💬</span></button>
+<div id="booking-chat-window">
+  <div id="booking-chat-header">
+    Чат с ассистентом
+    <button id="booking-chat-close" title="Закрыть">×</button>
+  </div>
+  <div id="booking-chat-messages"></div>
+  <form id="booking-chat-form">
+    <input id="booking-chat-input" type="text" placeholder="Ваш вопрос..." autocomplete="off" required />
+    <button id="booking-chat-send" type="submit">➤</button>
+  </form>
+</div>
+
+<script>
+// ============================================
+// НАСТРОЙКА: Укажите URL вашего backend
+// ============================================
+// Для ngrok (локальная разработка):
+// const BACKEND_URL = 'https://abc123.ngrok-free.app/widget';
+// 
+// Для продакшн сервера:
+// const BACKEND_URL = 'https://your-domain.com/widget';
+
+const BACKEND_URL = 'https://YOUR-BACKEND-URL.ngrok-free.app/widget';
+
+// ============================================
+// Код виджета (не требует изменений)
+// ============================================
+
+const chatBtn = document.getElementById('booking-chat-btn');
+const chatWindow = document.getElementById('booking-chat-window');
+const chatClose = document.getElementById('booking-chat-close');
+const chatForm = document.getElementById('booking-chat-form');
+const chatInput = document.getElementById('booking-chat-input');
+const chatMessages = document.getElementById('booking-chat-messages');
+const chatSend = document.getElementById('booking-chat-send');
+
+// Открытие чата
+chatBtn.onclick = () => {
+  chatWindow.style.display = 'flex';
+  chatBtn.style.display = 'none';
+  chatInput.focus();
+  
+  // Первое приветствие (автоматически при открытии)
+  if (chatMessages.children.length === 0) {
+    sendMessage('');
+  }
+};
+
+// Закрытие чата
+chatClose.onclick = () => {
+  chatWindow.style.display = 'none';
+  chatBtn.style.display = 'block';
+};
+
+// Добавление сообщения в чат
+function addMessage(text, isUser) {
+  if (!text || text.trim().length === 0) return;
+  
+  const msg = document.createElement('div');
+  msg.className = 'booking-msg ' + (isUser ? 'booking-msg-user' : 'booking-msg-bot');
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'booking-bubble ' + (isUser ? 'booking-bubble-user' : 'booking-bubble-bot');
+  bubble.textContent = text;
+  
+  msg.appendChild(bubble);
+  chatMessages.appendChild(msg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Индикатор загрузки
+function addLoadingIndicator() {
+  const msg = document.createElement('div');
+  msg.className = 'booking-msg booking-msg-bot';
+  msg.id = 'loading-indicator';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'booking-bubble booking-bubble-bot';
+  bubble.innerHTML = '<span style="opacity: 0.6;">●●●</span>';
+  
+  msg.appendChild(bubble);
+  chatMessages.appendChild(msg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeLoadingIndicator() {
+  const loader = document.getElementById('loading-indicator');
+  if (loader) loader.remove();
+}
+
+// Отправка сообщения
+async function sendMessage(text) {
+  try {
+    chatSend.disabled = true;
+    
+    // Показываем индикатор загрузки
+    addLoadingIndicator();
+    
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ message: text })
+    });
+    
+    if (!res.ok) throw new Error('Network error');
+    
+    const data = await res.json();
+    
+    // Убираем индикатор
+    removeLoadingIndicator();
+    
+    // Показываем ответ бота
+    const answer = data.answer ? data.answer.trim() : '';
+    if (answer) {
+      // Удаляем JSON из ответа (если он случайно попал)
+      const cleanAnswer = answer.replace(/\{[^}]*"Имя"[^}]*\}/g, '').trim();
+      if (cleanAnswer) addMessage(cleanAnswer, false);
+    }
+    
+    // Если заявка сохранена
+    if (data.saved) {
+      addMessage('✅ Отлично! Ваша запись сохранена. Мы свяжемся с вами для подтверждения.', false);
+    }
+    
+  } catch (err) {
+    removeLoadingIndicator();
+    addMessage('⚠️ Ошибка соединения. Пожалуйста, попробуйте позже или свяжитесь с нами по телефону.', false);
+    console.error('Chat error:', err);
+  } finally {
+    chatSend.disabled = false;
+  }
+}
+
+// Обработка отправки формы
+chatForm.onsubmit = async (e) => {
+  e.preventDefault();
+  const text = chatInput.value.trim();
+  if (!text) return;
+  
+  // Показываем сообщение пользователя
+  addMessage(text, true);
+  chatInput.value = '';
+  
+  // Отправляем на сервер
+  await sendMessage(text);
+};
+</script>
+<!-- /Universal Booking Chat Widget -->
