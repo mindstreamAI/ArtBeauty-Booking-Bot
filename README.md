@@ -22,16 +22,16 @@ Telegram-бот и веб-виджет для автоматической за�
 ### Веб-виджет на сайте
 ![Telegram бот - консультация](https://github.com/user-attachments/assets/049aa5a0-3315-4ef6-94a0-c5eba8039398)
 
-### Telegram бот - Диалог с клиентом
+### Telegram бот - диалог с клиентом
 ![Telegram бот - запись](https://github.com/user-attachments/assets/19db076d-70a0-48f6-810d-9fec482d4c65)
 
-### Telegram бот - Диалог с клиентом
+### Telegram бот - диалог с клиентом
 ![Веб-виджет](https://github.com/user-attachments/assets/885abe99-c8a3-428f-947c-2271a5390988)
 
-### Telegram бот - Диалог с клиентом
+### Telegram бот - процесс записи
 ![Уведомление о новой записи](https://github.com/user-attachments/assets/88deb98b-64ed-4344-8e7e-d0bafc23cc89)
 
-### Google Sheets - автоматическое сохранение записи
+### Google Sheets - автоматическое сохранение
 ![Google Sheets](https://github.com/user-attachments/assets/e4d89097-f1dc-4973-9cf2-a4d9daeb766a)
 
 ---
@@ -72,7 +72,7 @@ booking-assistant-bot/
 
 ```bash
 # Клонируйте репозиторий
-git clone https://github.com/your-username/booking-assistant-bot.git
+git clone https://github.com/mindstreamAI/booking-assistant-bot.git
 cd booking-assistant-bot
 
 # Создайте виртуальное окружение
@@ -574,7 +574,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install python3 python3-pip python3-venv nginx -y
 
 # 4. Клонируйте проект
-git clone https://github.com/your-username/booking-assistant-bot.git
+git clone https://github.com/mindstreamAI/booking-assistant-bot.git
 cd booking-assistant-bot
 
 # 5. Создайте виртуальное окружение
@@ -638,8 +638,8 @@ MIT License - проект распространяется свободно д�
 
 ### Нашли баг или есть предложения?
 
-- 🐛 Откройте [Issue](https://github.com/your-username/booking-assistant-bot/issues)
-- 💡 Предложите улучшение через [Pull Request](https://github.com/your-username/booking-assistant-bot/pulls)
+- 🐛 Откройте [Issue](https://github.com/mindstreamAI/booking-assistant-bot/issues)
+- 💡 Предложите улучшение через [Pull Request](https://github.com/mindstreamAI/booking-assistant-bot/pulls)
 - ⭐ Поставьте звезду проекту, если он вам помог!
 
 ### Перед обращением за помощью:
@@ -796,7 +796,7 @@ python main.py
 
 ```bash
 # 1. Клонируйте и установите
-git clone https://github.com/your-username/booking-assistant-bot.git
+git clone https://github.com/mindstreamAI/booking-assistant-bot.git
 cd booking-assistant-bot
 python -m venv venv
 source venv/bin/activate
@@ -863,11 +863,10 @@ curl -X POST "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://<NGROK-
 
 ## 📞 Контакты
 
-Если у вас есть вопросы по проекту или предложения по сотрудничеству:
+Автор проекта: **mindstreamAI**
 
-- 📧 Email: your-email@example.com
-- 💬 Telegram: @your_username
-- 🐙 GitHub: [your-username](https://github.com/your-username)
+- 🐙 GitHub: [mindstreamAI](https://github.com/mindstreamAI)
+- 📦 Репозиторий: [booking-assistant-bot](https://github.com/mindstreamAI/booking-assistant-bot)
 
 ---
 
@@ -884,7 +883,7 @@ curl -X POST "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://<NGROK-
 
 ## 🏆 Авторы и благодарности
 
-**Создатель проекта:** [Ваше имя](https://github.com/your-username)
+**Создатель проекта:** [mindstreamAI](https://github.com/mindstreamAI)
 
 **Благодарности:**
 - OpenAI за мощный API
